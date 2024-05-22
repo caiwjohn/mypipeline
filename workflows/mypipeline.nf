@@ -10,7 +10,7 @@ include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_mypipeline_pipeline'
-
+include { FASTP } from '../modules/nf-core/fastp/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -35,6 +35,19 @@ workflow MYPIPELINE {
     )
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+
+    //
+    // MODULE: FASTP
+    //
+    ch_adapters = params.adapters ? params.adapters : []
+    FASTP (
+        ch_samplesheet,
+        ch_adapters,
+        params.save_trimmed_fail,
+        params.save_merged
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(FASTP.out.json.collect{it[1]}.ifEmpty([]))
+    ch_versions      = ch_versions.mix(FASTP.out.versions.first())
 
     //
     // Collate and save software versions

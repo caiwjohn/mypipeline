@@ -274,6 +274,27 @@
                     "hidden": true
                 }
             }
+        },
+        "fastp": {
+            "title": "FASTP",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "adapters": {
+                    "type": "string",
+                    "description": "This is adapters"
+                },
+                "save_trimmed_fail": {
+                    "type": "boolean",
+                    "description": "Hello world"
+                },
+                "save_merged": {
+                    "type": "boolean",
+                    "description": "Goodbye"
+                }
+            },
+            "fa_icon": "fab fa-accessible-icon"
         }
     },
     "allOf": [
@@ -291,6 +312,9 @@
         },
         {
             "$ref": "#/definitions/generic_options"
+        },
+        {
+            "$ref": "#/definitions/fastp"
         }
     ]
 }
